@@ -1,0 +1,27 @@
+version: '3'
+services:
+    postgis:
+        image: kartoza/postgis:15-3
+        environment:
+            - POSTGRES_USER=docker
+            - POSTGRES_PASS=docker
+            - POSTGRES_DB=postgres
+        ports:
+            - '5432:5432'
+        volumes:
+            - postgis-data:/var/lib/postgresql
+            - ./postgis-init/:/docker-entrypoint-initdb.d/
+        networks:
+            - default
+        healthcheck:
+            test: ['CMD-SHELL', 'pg_isready']
+            interval: 10s
+            timeout: 5s
+            retries: 5
+volumes:
+    postgis-data:
+        driver: local
+
+networks:
+    default:
+        driver: bridge
